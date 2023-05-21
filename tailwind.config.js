@@ -6,7 +6,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,vue}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        '500': '500px'
+      }
+    },
   },
   plugins: [],
 }
