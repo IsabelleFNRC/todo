@@ -1,26 +1,54 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { reactive } from 'vue'
 
-export const useTarefasStore = defineStore('tarefas', () => {
-  const tarefas = ref([])
-
-  const adicionarTarefa = (tarefa) => {
-    tarefas.value.push(tarefa)
-  }
-
-  const removerTarefa = (id) => {
-    tarefas.value = tarefas.value.filter((tarefa) => tarefa.id !== id)
-  }
-
-  const editarTarefa = (id, novaTarefa) => {
-    const index = tarefas.value.findIndex((tarefa) => tarefa.id === id)
-    if (index !== -1) {
-      tarefas.value.splice(index, 1, novaTarefa)
+export const useTarefasStore = () => {
+  const state = reactive({
+    tarefas: [
+      { id: 1, descricao: 'Tarefa 1', status: 'pendente' },
+      { id: 2, descricao: 'Tarefa 2', status: 'concluida' },
+      { id: 3, descricao: 'Tarefa 3', status: 'pendente' }
+    ]
+  })
+  const alterarStatusTarefa = (id) => {
+    const tarefa = state.tarefas.find((t) => t.id === id)
+    if (tarefa) {
+      if (tarefa.status === 'pendente') tarefa.status = 'concluida'
+      if (tarefa.status === 'concluida') tarefa.status = 'pendente'
     }
   }
 
-  const count = computed(() => tarefas.value.length)
-  const doubleCount = computed(() => count.value * 2)
+  const criarTarefa = (descricao) => {
+    if (descricao.trim() !== '') {
+      console.log('salvando tarefa')
+      const novaTarefa = {
+        id: state.tarefas.length + 1,
+        descricao,
+        status: 'pendente'
+      }
 
-  return { tarefas, adicionarTarefa, removerTarefa, editarTarefa, count, doubleCount }
-})
+      state.tarefas.push(novaTarefa)
+    }
+  }
+
+  const editarTarefa = (id, novaDescricao) => {
+    const tarefa = state.tarefas.find((t) => t.id === id)
+    if (tarefa) {
+      tarefa.descricao = novaDescricao
+    }
+  }
+
+  const excluirTarefa = (id) => {
+    state.tarefas = state.tarefas.filter((t) => t.id !== id)
+    console.log(state.tarefas)
+  }
+
+  const obterTarefas = () => {}
+
+  return {
+    state,
+    criarTarefa,
+    alterarStatusTarefa,
+    editarTarefa,
+    excluirTarefa,
+    obterTarefas
+  }
+}
