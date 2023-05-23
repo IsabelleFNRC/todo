@@ -1,54 +1,42 @@
-import { reactive } from 'vue'
+import { defineStore } from 'pinia'
 
-export const useTarefasStore = () => {
-  const state = reactive({
+export const useTarefasStore = defineStore('tarefas', {
+  state: () => ({
     tarefas: [
-      { id: 1, descricao: 'Tarefa 1', status: 'pendente' },
-      { id: 2, descricao: 'Tarefa 2', status: 'concluida' },
-      { id: 3, descricao: 'Tarefa 3', status: 'pendente' }
+      {
+        id: 0,
+        descricao: 'Tarefa 1',
+        status: 0
+      }
     ]
-  })
-  const alterarStatusTarefa = (id) => {
-    const tarefa = state.tarefas.find((t) => t.id === id)
-    if (tarefa) {
-      if (tarefa.status === 'pendente') tarefa.status = 'concluida'
-      if (tarefa.status === 'concluida') tarefa.status = 'pendente'
-    }
-  }
-
-  const criarTarefa = (descricao) => {
-    if (descricao.trim() !== '') {
-      console.log('salvando tarefa')
+  }),
+  actions: {
+    adicionarTarefa(descricaoTarefa) {
       const novaTarefa = {
-        id: state.tarefas.length + 1,
-        descricao,
-        status: 'pendente'
+        id: this.tarefas.length,
+        descricao: descricaoTarefa,
+        status: 0
       }
 
-      state.tarefas.push(novaTarefa)
+      this.tarefas.push(novaTarefa)
+    },
+    editarTarefa(id, novaDescricao) {
+      let tarefa = this.tarefas.find((tarefa) => tarefa.id === id)
+      if (tarefa) {
+        tarefa.descricao = novaDescricao
+      }
+    },
+    removerTarefa(id) {
+      this.tarefas = this.tarefas.filter((tarefa) => tarefa.id !== id)
+    },
+    alterarStatusTarefa(id) {
+      const tarefa = this.tarefas.find((item) => item.id === id)
+      if (tarefa) {
+        tarefa.status = !tarefa.status
+      }
     }
+  },
+  persist: {
+    enabled: true
   }
-
-  const editarTarefa = (id, novaDescricao) => {
-    const tarefa = state.tarefas.find((t) => t.id === id)
-    if (tarefa) {
-      tarefa.descricao = novaDescricao
-    }
-  }
-
-  const excluirTarefa = (id) => {
-    state.tarefas = state.tarefas.filter((t) => t.id !== id)
-    console.log(state.tarefas)
-  }
-
-  const obterTarefas = () => {}
-
-  return {
-    state,
-    criarTarefa,
-    alterarStatusTarefa,
-    editarTarefa,
-    excluirTarefa,
-    obterTarefas
-  }
-}
+})

@@ -1,13 +1,15 @@
 <template>
   <div
     class="flex gap-2 items-center bg-gray-200 mb-1 rounded-md p-2 h-fit justify-between hover:cursor-pointer"
-    @click="alteraStatusTarefa(idTarefa)"
+    @click="alteraStatusTarefa"
   >
+    <div class="flex items-center">
+      <input type="checkbox" @click="alteraStatusTarefa" :checked="tarefa.status" class="mr-2"/>
     <p
       :id="idTarefa"
       class="text-sm font-medium break-words max-w-full"
       :class="{
-        'line-through': tarefa.status === 'concluida',
+        'line-through': tarefa.status,
         editavel: modoEdicao.valor
       }"
       :contenteditable="modoEdicao.valor"
@@ -15,6 +17,7 @@
     >
       {{ tarefa.descricao }}
     </p>
+    </div>
 
     <div class="flex w-24 gap-2">
       <button
@@ -33,7 +36,7 @@
       </button>
       <button
         class="bg-red-600 flex items-center justify-center p-2 rounded-md font-bold"
-        @click="excluirTarefa(idTarefa)"
+        @click="removeTarefa"
       >
         X
       </button>
@@ -48,7 +51,7 @@ import { reactive } from 'vue'
 export default {
   name: 'CartaoTarefa',
   setup(props) {
-    const { editarTarefa, excluirTarefa, alterarStatusTarefa } = useTarefasStore()
+    const { editarTarefa, removerTarefa, alterarStatusTarefa } = useTarefasStore()
 
     const modoEdicao = reactive({ valor: false })
 
@@ -62,21 +65,28 @@ export default {
     }
 
     const editarDescricao = (event) => {
-      props.tarefa.descricao = event.target.textContent
+      let novaDescricao = event.target.textContent
+      if (novaDescricao) {
+        editarTarefa(props.tarefa.id, novaDescricao);
+      }
     }
 
-    const alteraStatusTarefa = (id) => {
-      alterarStatusTarefa(id)
+    const removeTarefa = () => {
+      removerTarefa(props.tarefa.id);
+    }
+
+    const alteraStatusTarefa = () => {
+      alterarStatusTarefa(props.tarefa.id)
     }
 
     return {
+      idTarefa: props.idTarefa,
+      tarefa: props.tarefa,
       iniciarEdicao,
       salvarEdicao,
       editarDescricao,
-      excluirTarefa,
+      removeTarefa,
       alteraStatusTarefa,
-      idTarefa: props.idTarefa,
-      tarefa: props.tarefa,
       modoEdicao
     }
   },
