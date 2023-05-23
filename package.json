@@ -8,6 +8,7 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "server": "npx json-server --watch db.json",
     "format": "prettier --write src/"
   },
   "dependencies": {

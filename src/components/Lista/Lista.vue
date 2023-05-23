@@ -10,6 +10,7 @@ export default {
   },
   setup() {
     const store = useTarefasStore();
+
     const { tarefas } = storeToRefs(store);
     return {
       tarefas

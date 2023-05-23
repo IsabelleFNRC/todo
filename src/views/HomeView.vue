@@ -8,6 +8,14 @@ export default {
   components: {
     Lista
   },
+  async created() {
+    try {
+      const store = useTarefasStore();
+      await store.obtemTarefas();
+    } catch (error) {
+        console.log(error);
+    }
+  },
   setup() {
     const descricaoTarefa = ref('');
     const store = useTarefasStore();
@@ -27,7 +35,7 @@ export default {
 </script>
 <template>
   <div
-  class="flex w-full h-screen items-center justify-center"
+  class="flex w-full h-screen items-center justify-center bg-gradient-to-l from-cyan-500 to-blue-500"
 >
   <div class="p-5 bg-white rounded-md text-black w-500">
     <h1 class="font-bold mb-4">Lista de Tarefas</h1>
